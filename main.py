@@ -110,7 +110,7 @@ def main(args):
         assert args.data_file is not None, "Please provide tar dataset file containing processed data."
         assert args.model is not None, "Please provide path to pretrained model"
         test_dataset = MaterialData(data_file=args.data_file, id_file=args.test_ids)
-        test_loader = DataLoader(test_dataset, batch_size=1)
+        test_loader = DataLoader(test_dataset, batch_size=args.batch_size)
         test_ids_file_name = os.path.basename(args.test_ids)
         
         model = ProDosNet(orig_atom_fea_len=test_dataset[0].x.shape[1], nbr_fea_len=test_dataset[0].edge_attr.shape[1], n_conv=config["n_conv"], use_mlp=args.use_mlp)
@@ -274,8 +274,8 @@ if __name__ == '__main__':
     parser.add_argument("--scale", default=False, action='store_true',
                         help="If True, rescales bond distances to [0, 1] range. Default: False")
     
-    parser.add_argument("--norm_pdos", default=False, action='store_true',
-                        help="If True, normalize orbital PDOS to area = 1. Default: False")
+    parser.add_argument("--norm_pdos", default=True, action='store_false',
+                        help="If True, normalize orbital PDOS to area = 1. Default: True")
 
     args = parser.parse_args()
     
