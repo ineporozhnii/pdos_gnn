@@ -262,12 +262,9 @@ def run_test(args, save_path: str, test_loader: DataLoader, model: ProDosNet):
     if args.cuda:
             device = torch.device("cuda")
             model.to(device)
-    test_loss, test_pdos_rmse, test_cdf_pdos_rmse = validation(
-                model, metric, epoch=0, fold=None, save_path=save_path, validation_loader=test_loader, train_on_dos=args.train_on_dos, save_output=False, save_dos=args.save_dos, save_pdos=args.save_pdos, use_cuda=args.cuda, use_cdf=args.use_cdf, train_on_atomic_dos=args.train_on_atomic_dos, test=True)
-    error_type_list = ["Test loss", "Test PDOS RMSE", "Test CDF PDOS RMSE"]
-    errors = [test_loss, test_pdos_rmse, test_cdf_pdos_rmse]
-    results_dict =  {"Error type": error_type_list, "Mean errors": errors}
-    result_df = pd.DataFrame(data=results_dict)
+    error_dict = validation(
+                model, metric, epoch=0, fold=None, save_path=save_path, validation_loader=test_loader, train_on_dos=args.train_on_dos, save_output=True, save_dos=args.save_dos, save_pdos=args.save_pdos, use_cuda=args.cuda, use_cdf=args.use_cdf, train_on_atomic_dos=args.train_on_atomic_dos, test=True)
+    result_df = pd.DataFrame(data=error_dict.items())
     result_df.to_csv("%s/results.csv"%save_path, sep='\t')
 
     print("------------------------- Test Results ------------------------- \n")
@@ -614,17 +611,6 @@ def validation(model: ProDosNet = None,
                 output_orbital_pdos_diff[output_orbital_pdos_diff<0] = 0.0
                 orbital_pdos_mse = mse_loss(output_orbital_pdos_diff, (torch.diff(target_orbital_pdos, dim=1)/e_diff)).item()
                 orbital_pdos_mse_cdf = mse_loss(output_pdos, target_orbital_pdos).item()
-                # e = np.linspace(-20, 10, 256)
-                # fig = plt.figure()
-                # plt.plot(e, (output_dos/torch.max(target_dos, dim=1)[0].unsqueeze(1))[0].detach().numpy(), label=f'DOS CDF MSE: {dos_mse_cdf}')
-                # plt.plot(e, (target_dos/torch.max(target_dos, dim=1)[0].unsqueeze(1))[0].detach().numpy())
-                # plt.legend()
-                # plt.show()
-                # fig = plt.figure()
-                # plt.plot(e[1:], output_dos_diff[0].detach().numpy(), label=f'DOS MSE: {dos_mse}')
-                # plt.plot(e[1:], (torch.diff(target_dos, dim=1)/e_diff)[0].detach().numpy())
-                # plt.legend()
-                # plt.show()
 
             else:
                 if scaler is not None:
@@ -652,18 +638,6 @@ def validation(model: ProDosNet = None,
 
                 orbital_pdos_mse = mse_loss(output_pdos, target_orbital_pdos).item()
                 orbital_pdos_mse_cdf = mse_loss(torch.cumsum(output_pdos, dim=1)*e_diff, torch.cumsum(target_orbital_pdos, dim=1)*e_diff).item()
-                # e = np.linspace(-20, 10, 256)
-                # fig = plt.figure()
-                # plt.plot(e, output_dos[0].detach().numpy(), label=f'DOS MSE: {dos_mse}')
-                # plt.plot(e, target_dos[0].detach().numpy())
-                # plt.legend()
-                # plt.show()
-
-                # fig = plt.figure()
-                # plt.plot(e, (torch.cumsum(output_dos, dim=1)*e_diff)[0].detach().numpy(), label=f'DOS CDF MSE: {dos_mse_cdf}')
-                # plt.plot(e, (torch.cumsum(target_dos, dim=1)*e_diff)[0].detach().numpy())
-                # plt.legend()
-                # plt.show()
 
         elif train_on_atomic_dos:
             if use_cdf: 
@@ -695,18 +669,6 @@ def validation(model: ProDosNet = None,
                 output_orbital_pdos_diff[output_orbital_pdos_diff<0] = 0.0
                 orbital_pdos_mse = mse_loss(output_orbital_pdos_diff, (torch.diff(target_orbital_pdos, dim=1)/e_diff)).item()
                 orbital_pdos_mse_cdf = mse_loss(output_pdos, target_orbital_pdos).item()
-                # e = np.linspace(-20, 10, 256)
-                # fig = plt.figure()
-                # plt.plot(e, output_dos[0].detach().numpy(), label=f'DOS CDF MSE: {dos_mse_cdf}')
-                # plt.plot(e, output_dos[0].detach().numpy()/2, label=f'DOS CDF MSE: {dos_mse_cdf}')
-                # plt.plot(e, target_dos[0].detach().numpy())
-                # plt.legend()
-                # plt.show()
-                # fig = plt.figure()
-                # plt.plot(e[1:], output_dos_diff[0].detach().numpy(), label=f'DOS MSE: {dos_mse}')
-                # plt.plot(e[1:], (torch.diff(target_dos, dim=1)/e_diff)[0].detach().numpy())
-                # plt.legend()
-                # plt.show()
 
             else:
                 if scaler is not None:
@@ -762,17 +724,6 @@ def validation(model: ProDosNet = None,
                 output_orbital_pdos_diff[output_orbital_pdos_diff<0] = 0.0
                 orbital_pdos_mse = mse_loss(output_orbital_pdos_diff, (torch.diff(target_orbital_pdos, dim=1)/e_diff)).item()
                 orbital_pdos_mse_cdf = mse_loss(output_pdos, target_orbital_pdos).item()
-                # e = np.linspace(-20, 10, 256)
-                # fig = plt.figure()
-                # plt.plot(e, output_dos[0].detach().numpy(), label=f'DOS CDF MSE: {dos_mse_cdf}')
-                # plt.plot(e, target_dos[0].detach().numpy())
-                # plt.legend()
-                # plt.show()
-                # fig = plt.figure()
-                # plt.plot(e[1:], output_dos_diff[0].detach().numpy(), label=f'DOS MSE: {dos_mse}')
-                # plt.plot(e[1:], (torch.diff(target_dos, dim=1)/e_diff)[0].detach().numpy())
-                # plt.legend()
-                # plt.show()
                    
             else:
                 if scaler is not None:
@@ -797,19 +748,6 @@ def validation(model: ProDosNet = None,
 
                 orbital_pdos_mse = mse_loss(output_pdos, target_orbital_pdos).item()
                 orbital_pdos_mse_cdf = mse_loss(torch.cumsum(output_pdos, dim=1)*e_diff, torch.cumsum(target_orbital_pdos, dim=1)*e_diff).item()
-
-                # e = np.linspace(-20, 10, 256)
-                # fig = plt.figure()
-                # plt.plot(e, output_dos[0].detach().numpy(), label=f'DOS MSE: {dos_mse}')
-                # plt.plot(e, target_dos[0].detach().numpy())
-                # plt.legend()
-                # plt.show()
-
-                # fig = plt.figure()
-                # plt.plot(e, (torch.cumsum(output_dos, dim=1)*e_diff)[0].detach().numpy(), label=f'DOS CDF MSE: {dos_mse_cdf}')
-                # plt.plot(e, (torch.cumsum(target_dos, dim=1)*e_diff)[0].detach().numpy())
-                # plt.legend()
-                # plt.show()
 
         running_loss += loss_item
 
@@ -871,7 +809,8 @@ def validation(model: ProDosNet = None,
                 if use_cdf:
                     pdos_to_save = output_orbital_pdos_diff
                     pdos_to_save_cdf = output_pdos
-                    target_pdos_cpu = target_pdos_diff.data.cpu()
+                    target_pdos_cpu = (torch.diff(target_orbital_pdos, dim=1)/e_diff).data.cpu()
+                    target_pdos_cpu_cdf = target_orbital_pdos
                 else:
                     pdos_to_save = output_pdos
                     pdos_to_save_cdf = torch.cumsum(output_pdos, dim=1)*e_diff
