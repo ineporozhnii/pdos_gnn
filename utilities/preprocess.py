@@ -12,6 +12,7 @@ from pymatgen.core.structure import Structure
 from pymatgen.electronic_structure.core import Spin
 from pymatgen.electronic_structure.core import Orbital
 from pymatgen.electronic_structure.dos import CompleteDos
+import matplotlib.pyplot as plt
 
 class GaussianDistance(object):
     def __init__(self, dmin, dmax, step, var=None):
@@ -132,7 +133,7 @@ class CrystalGraphPDOS():
             if area == 0:
                 return 1
             else:
-                norm_coefficient = 1/area
+                norm_coefficient = 2 / area
             return norm_coefficient
         else:
             n_electrons = 0
@@ -280,7 +281,6 @@ class CrystalGraphPDOS():
                     target_orbital_density = interp_funtion(shifted_energies)
                     target_orbital_density_cdf = interp_funtion_cdf(shifted_energies)
 
-                    target_orbital_density = total_dos_norm_coef * target_orbital_density
                     target_pdos.append(target_orbital_density)
                     target_pdos_cdf.append(target_orbital_density_cdf)
                     orbital_max_density_list.append(np.max(target_orbital_density))
@@ -298,6 +298,10 @@ class CrystalGraphPDOS():
             target_dos_cdf = torch.sum(target_pdos_cdf, dim=0)
             target_dos_cdf = torch.unsqueeze(target_dos_cdf, 0)
             e_diff = Tensor([e_diff])
+            plt.title(material_file_name)
+            plt.plot(np.linspace(-20, 10, 256), target_dos.detach().numpy()[0])
+            plt.show()
+            return
             return atom_fea, target_dos, target_pdos, target_dos_cdf, target_pdos_cdf, elements, sites, orbital_types, orbital_max_density_list, e_diff
 
         return atom_fea, elements, sites, orbital_types
