@@ -1,0 +1,8 @@
+[project]
+
+name = "PDOS GNN"
+version = "1.0.0"
+
+dynamic = ["dependencies"]
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
