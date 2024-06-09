@@ -2,12 +2,6 @@
 requires = ["setuptools", "setuptools-scm"]
 build-backend = "setuptools.build_meta"
 
-[project]
-name = "PDOS_GNN"
-authors = [
-    {name = "Ihor Neporozhnii"}
-]
-
 [tool.setuptools]
 include-package-data = false
 
@@ -15,6 +9,11 @@ include-package-data = false
 include = ["pdos_gnn*"]
 exclude = ["data*", "notebooks*", "assets*"]
 
+[project]
+name = "PDOS_GNN"
+authors = [
+    {name = "Ihor Neporozhnii"}
+]
 version = "1.0.0"
 readme = "README.md"
 requires-python = ">=3.8"
