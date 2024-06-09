@@ -3,6 +3,21 @@
 name = "PDOS GNN"
 version = "1.0.0"
 
-dynamic = ["dependencies"]
-[tool.setuptools.dynamic]
-dependencies = {file = ["requirements.txt"]}
+[options]
+install_requires =
+    matplotlib==3.8.2
+    mp_api==0.41.2
+    numpy==1.26.4
+    pandas==2.2.2
+    plotly==5.18.0
+    pymatgen==2024.4.13
+    scikit_learn==1.4.0
+    scipy==1.13.1
+    seaborn==0.13.2
+    torch==1.13.1
+    torch_geometric==2.5.3
+    torch_scatter==2.1.2
+    tqdm==4.66.1
+    umap_learn==0.5.5
+    
+packages = find:
