@@ -8,6 +8,13 @@ authors = [
     {name = "Ihor Neporozhnii"}
 ]
 
+[tool.setuptools]
+include-package-data = false
+
+[tool.setuptools.packages.find]
+include = ["pdos_gnn*"]
+exclude = ["data*", "notebooks*", "assets*"]
+
 version = "1.0.0"
 readme = "README.md"
 requires-python = ">=3.8"
