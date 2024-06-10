@@ -103,11 +103,12 @@ class CrystalGraphPDOS():
         self.orbital_name_list = ["s", "py", "pz", "px", "dxy", "dyz", "dz2", "dxz", "dx2"]
         self.spin=Spin(1)
 
-        with open("utilities/atom_features_one_hot.json", "r") as element_one_hot_features_file:
+        features_dir = os.path.join(os.path.dirname(__file__), '../features')
+        with open(f"{features_dir}/atom_features_one_hot.json", "r") as element_one_hot_features_file:
                     self.element_one_hot_features = json.load(element_one_hot_features_file)
-        with open("utilities/orbit_radius_fea_scaled.json", "r") as orbit_radius_fea_file:
+        with open(f"{features_dir}/orbit_radius_fea_scaled.json", "r") as orbit_radius_fea_file:
                     self.orbit_radius_fea = json.load(orbit_radius_fea_file)
-        with open("utilities/n_electrons.json", "r") as n_electrons_file:
+        with open(f"{features_dir}/n_electrons.json", "r") as n_electrons_file:
                     self.n_electrons_dict = json.load(n_electrons_file)
 
 
