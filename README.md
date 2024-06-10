@@ -14,12 +14,12 @@ In this work, we developed a Graph Neural Network (GNN) ProDosNet which is train
 ## Setup locally
 1. Clone the repository
     - `git clone git@github.com:ineporozhnii/pdos_gnn.git`
-2. Create a virtual environment in the repo directory
+2. Create a virtual environment:
     - `cd pdos_gnn/`
     - `python -m venv pdos_gnn_env`
     - `source pdos_gnn_env/bin/activate`
-3. Install dependencies
-    - `pip install -r requirements.txt`
+3. To install project run: 
+    - `pip install -e .`
   
 ## Run locally
 1. Preprocess data for training from raw Materials Project PDOS
