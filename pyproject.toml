@@ -18,6 +18,7 @@ version = "1.0.0"
 readme = "README.md"
 requires-python = ">=3.8"
 dependencies = [
+    "emmet_core==0.83.8",
     "matplotlib==3.8.2",
     "mp_api==0.41.2",
     "numpy==1.26.4",
