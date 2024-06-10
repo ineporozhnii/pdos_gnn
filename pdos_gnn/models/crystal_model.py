@@ -21,20 +21,18 @@ class CrystalGraphConv(MessagePassing):
         self.softplus = nn.Softplus()
 
         self.mlp = nn.Sequential(
-                nn.Linear(2*self.atom_fea_len+self.nbr_fea_len, l1), #self.atom_fea_len+2*int(self.atom_fea_len/3)
+                nn.Linear(2*self.atom_fea_len+self.nbr_fea_len, l1),
                 nn.Softplus(),
-                nn.Linear(l1, l2), #self.atom_fea_len+2*int(self.atom_fea_len/3), self.atom_fea_len+int(self.atom_fea_len/3
+                nn.Linear(l1, l2), 
                 nn.Softplus(),
-                nn.Linear(l2, self.atom_fea_len), #self.atom_fea_len+int(self.atom_fea_len/3), self.atom_fea_len
+                nn.Linear(l2, self.atom_fea_len),
                 nn.Softplus() )
 
     def forward(self, x: Tensor, edge_index: Adj,
                 edge_attr: OptTensor = None, size: Size = None):
         """"""
         x:PairTensor = (x, x)
-        # propagate_type: (x: PairTensor, edge_attr: OptTensor)
         out, edge_attr = self.propagate(edge_index, x=x, edge_attr=edge_attr, size=size)
-        #if not self.use_cdf:
         out = self.softplus(self.BatchNorm(out) + x[1])
         return out
 
