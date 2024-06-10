@@ -6,7 +6,7 @@ from torch import Tensor
 from torch_geometric.nn import BatchNorm
 from torch_geometric.nn.conv import MessagePassing
 from torch_geometric.nn import global_add_pool as gsp
-from torch_geometric.typing import PairTensor, Adj, OptTensor, Size
+from torch_geometric.typing import PairTensor, Adj, Size
 
 class CrystalGraphConv(MessagePassing):
     def __init__(self, nbr_fea_len, l1, l2, use_cdf, atom_fea_len=64,
@@ -29,14 +29,14 @@ class CrystalGraphConv(MessagePassing):
                 nn.Softplus() )
 
     def forward(self, x: Tensor, edge_index: Adj,
-                edge_attr: OptTensor = None, size: Size = None):
+                edge_attr: Tensor = None, size: Size = None):
         """"""
         x:PairTensor = (x, x)
         out, edge_attr = self.propagate(edge_index, x=x, edge_attr=edge_attr, size=size)
         out = self.softplus(self.BatchNorm(out) + x[1])
         return out
 
-    def message(self, x_i, x_j, edge_attr: OptTensor):
+    def message(self, x_i, x_j, edge_attr: Tensor):
         z = torch.cat([x_i, x_j, edge_attr], dim=-1)
         return self.mlp(z)
 
