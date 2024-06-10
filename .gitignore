@@ -167,5 +167,7 @@ core.*
 test_outputs/
 processed_data/
 wandb/
+data/cif_dir/
+data/dos_dir/
 submit.sh
 *.sh
